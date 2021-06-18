@@ -12,13 +12,12 @@ const getUsers = async (
     const allUsers = await prisma.user.findMany({
       take,
       skip,
-      orderBy,
     });
     console.log("allUsers", allUsers);
-  } catch (err) {}
+  } catch (err) { }
 };
 
-const getUser = async (id) => {
+const getUser = async (id: number) => {
   try {
     const userFound = await prisma.user.findUnique({
       where: {
@@ -34,7 +33,7 @@ const getUser = async (id) => {
   }
 };
 
-const createUser = async (userInput) => {
+const createUser = async (userInput: any) => {
   const { Profile, Role, ...otherProps } = userInput;
   const user = {
     ...otherProps,
@@ -53,7 +52,7 @@ const createUser = async (userInput) => {
       },
 
     })
-    console.log("éuserCreated", userCreated.Profile.CreatedAt.toISOString());
+    console.log("éuserCreated", userCreated?.Profile?.CreatedAt.toISOString());
     return userCreated;
   } catch (err) {
     if (err.code === "P2002") {
