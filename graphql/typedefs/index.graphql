@@ -1,0 +1,11 @@
+
+scalar Date
+type Query {
+  getUsers: [User]!
+  getUser(id: Int!): User
+  getProfile(id: Int!): Profile!
+}
+
+type Mutation {
+  createUser(userInput: UserCreateInput): User!
+}

@@ -1,0 +1,16 @@
+type Profile {
+  ID: ID!
+  UserID: Int!
+  CreatedAt: Date
+  UpdatedAt: Date
+  BirthDate: Date
+  FirstName: String
+  LastName: String
+  Gender: String
+}
+
+input ProfileInput {
+  FirstName: String
+  LastName: String
+  Gender: String
+}

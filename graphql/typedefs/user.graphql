@@ -1,0 +1,23 @@
+type User {
+  ID: ID!
+  Email: String!
+  Password: String!
+  Profile: Profile
+}
+
+type usersList {
+  User: [User]!
+  Count: Int!
+}
+
+input UserCreateInput {
+  Email: String
+  Password: String
+  Profile: ProfileInput
+  Role: String
+}
+
+input UserUpdateInput {
+  Email: String
+  Password: String
+}

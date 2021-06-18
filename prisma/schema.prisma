@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Profile {
+  ID        Int      @id @default(autoincrement())
+  Bio       String?
+  UserID    Int      @unique
+  User      User     @relation(fields: [UserID], references: [ID])
+  CreatedAt DateTime @default(now())
+  UpdatedAt DateTime?
+  BirthDate DateTime?
+  FirstName String   @db.VarChar(255)
+  LastName  String   @db.VarChar(255)
+  Gender    String
+}
+
+
+
+model User {
+  ID       Int       @id @default(autoincrement())
+  Email    String    @unique @db.VarChar(255)
+  Password String    @db.VarChar(255)
+  Profile  Profile?
+  UserType UserType?
+  Student  Student?
+  Admin    Admin?
+  Teacher  Teacher?
+}
+
+model UserType {
+  ID     Int    @id @default(autoincrement())
+  type   String
+  UserID Int    @unique
+  User   User   @relation(fields: [UserID], references: [ID])
+}
+
+model Student {
+  ID     Int  @id @default(autoincrement())
+  UserID Int  @unique
+  User   User @relation(fields: [UserID], references: [ID])
+
+}
+
+model Admin {
+  ID     Int  @id @default(autoincrement())
+  UserID Int  @unique
+  User   User @relation(fields: [UserID], references: [ID])
+
+}
+
+model Teacher {
+  ID     Int  @id @default(autoincrement())
+  UserID Int  @unique
+  User   User @relation(fields: [UserID], references: [ID])
+
+}
