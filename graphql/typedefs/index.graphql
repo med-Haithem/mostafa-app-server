@@ -1,11 +1,12 @@
-
 scalar Date
 type Query {
   getUsers: [User]!
   getUser(id: Int!): User
   getProfile(id: Int!): Profile!
+  login(email: String, password: String): login!
 }
 
 type Mutation {
-  createUser(userInput: UserCreateInput): User!
+  register(userInput: UserCreateInput): login!
+  revokeToken(id: Int!): Boolean!
 }

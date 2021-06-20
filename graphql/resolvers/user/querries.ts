@@ -1,4 +1,6 @@
-import { getUsers, getUser } from "../../../services";
+import { isAuthenticated } from "../../../helpers";
+import { getUsers, getUser, login } from "../../../services";
+import { MyContext } from "../../../types";
 const userQueries = {
   getUsers: async (_: any, args: any) => {
     return [];
@@ -7,6 +9,11 @@ const userQueries = {
     const result = await getUser(args.id);
     return result;
   },
-};
+  login: async (_: any, args: { email: string, password: string }, context: MyContext) => {
+
+    return await login(args.email, args.password, context);
+  }
+}
+
 
 export default userQueries;

@@ -1,5 +1,8 @@
 import { prisma } from "../../db";
 import { ApolloError } from "apollo-server-errors";
+import { AuthenticationError } from "apollo-server-express";
+import { comparePassword, encryptPassword, createAccessToken, createRefreshToken, sendRefreshToken } from "../../helpers";
+import { MyContext } from "../../types";
 
 const getUsers = async (
   skip = 0,
@@ -33,10 +36,12 @@ const getUser = async (id: number) => {
   }
 };
 
-const createUser = async (userInput: any) => {
+const register = async (userInput: any) => {
   const { Profile, Role, ...otherProps } = userInput;
+  const { Password, ...otherUserProps } = otherProps;
   const user = {
-    ...otherProps,
+    ...otherUserProps,
+    Password: await encryptPassword(Password),
     Profile: {
       create: Profile,
     },
@@ -46,14 +51,10 @@ const createUser = async (userInput: any) => {
   };
   try {
     const userCreated = await prisma.user.create({
-      data: user,
-      include: {
-        Profile: true,
-      },
-
+      data: user
     })
-    console.log("éuserCreated", userCreated?.Profile?.CreatedAt.toISOString());
-    return userCreated;
+    const token = createAccessToken({ userID: userCreated.ID });
+    return { token };
   } catch (err) {
     if (err.code === "P2002") {
       const attribute = err.meta.target.split("_")[0];
@@ -62,4 +63,25 @@ const createUser = async (userInput: any) => {
   }
 };
 
-export { getUsers, getUser, createUser };
+const login = async (email: string, password: string, { res }: MyContext) => {
+  const userFound = await prisma.user.findUnique({
+    where: {
+      Email: email
+    },
+  });
+  if (!userFound) throw new AuthenticationError("Wrong Email!");
+
+  const isMatch = await comparePassword(password, userFound.Password);
+  if (isMatch) {
+    const accessToken = createAccessToken({ userID: userFound.ID, tokenVersion: userFound.tokenVersion });
+    const refreshToken = createRefreshToken({ userID: userFound.ID, tokenVersion: userFound.tokenVersion });
+    sendRefreshToken(res, refreshToken);
+    return { accessToken };
+  } else {
+    throw new AuthenticationError("Wrong Password!");
+  }
+}
+
+
+
+export { getUsers, getUser, register, login };

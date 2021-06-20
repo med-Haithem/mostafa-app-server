@@ -29,6 +29,7 @@ model User {
   ID       Int       @id @default(autoincrement())
   Email    String    @unique @db.VarChar(255)
   Password String    @db.VarChar(255)
+  tokenVersion Int @default(0)
   Profile  Profile?
   UserType UserType?
   Student  Student?

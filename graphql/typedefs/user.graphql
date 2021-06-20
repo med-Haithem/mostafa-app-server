@@ -9,6 +9,9 @@ type usersList {
   User: [User]!
   Count: Int!
 }
+type login {
+  accessToken: String
+}
 
 input UserCreateInput {
   Email: String
