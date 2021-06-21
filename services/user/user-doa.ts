@@ -53,8 +53,8 @@ const register = async (userInput: any) => {
     const userCreated = await prisma.user.create({
       data: user
     })
-    const token = createAccessToken({ userID: userCreated.ID });
-    return { token };
+    const accessToken = createAccessToken({ userID: userCreated.ID });
+    return { accessToken };
   } catch (err) {
     if (err.code === "P2002") {
       const attribute = err.meta.target.split("_")[0];
